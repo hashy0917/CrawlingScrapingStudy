@@ -1,0 +1,14 @@
+import requests
+from cachecontrol import CacheControl
+
+session = requests.session()
+cached_session = CacheControl(session)
+
+# 1回目はキャシュが存在しないのでサーバーから取得しキャッシュする
+response = cached_session.get("https://docs.python.org/3/")
+print(response.from_cache)
+
+# 2回目はETagとLast-Modifiedの値を使って更新されているかを確認する
+# 更新されていない場合のコンテンツはキャッシュから取得するので高速に処理できる
+response = cached_session.get("https://docs.python.org/3")
+print(response.from_cache)
